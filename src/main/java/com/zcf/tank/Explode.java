@@ -1,11 +1,11 @@
-package tank;
+package com.zcf.tank;
 
 import java.awt.*;
 
 /**
  * @Auther:ZhenCF
  * @Date: 2022-01-26-3:45
- * @Description: tank
+ * @Description: com.zcf.tank
  * @version: 1.0
  */
 

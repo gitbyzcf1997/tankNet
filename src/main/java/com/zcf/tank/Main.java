@@ -1,15 +1,11 @@
-package tank;
+package com.zcf.tank;
 
-import util.PropertMgr;
-
-import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import com.zcf.util.PropertMgr;
 
 /**
  * @Auther:ZhenCF
  * @Date: 2022-01-24-21:40
- * @Description: tank
+ * @Description: com.zcf.tank
  * @version: 1.0
  */
 public class Main {

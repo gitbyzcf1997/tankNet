@@ -1,15 +1,15 @@
-package tank;
+package com.zcf.tank;
 
 /**
  * @Auther:ZhenCF
  * @Date: 2022-01-26-1:43
- * @Description: tank
+ * @Description: com.zcf.tank
  * @version: 1.0
  */
 
 
 
-import util.ImageUtil;
+import com.zcf.util.ImageUtil;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -44,7 +44,7 @@ public class ResourceMgr {
             bulletD=ImageUtil.rotateImage(bulletU,180);
             //将爆炸的图片加载到内存
             for(int i=0;i<16;i++){
-                explodes[i]=ImageIO.read(ResourceMgr.class.getClassLoader().getResourceAsStream("images/e"+(i+1)+".gif"));
+                explodes[i]=ImageIO.read(ResourceMgr.class.getClassLoader().getResourceAsStream("images/e" +(i+1)+".gif"));
             }
         } catch (IOException e) {
             e.printStackTrace();

@@ -1,4 +1,4 @@
-package util;
+package com.zcf.util;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -6,7 +6,7 @@ import java.awt.image.BufferedImage;
 /**
  * @Auther:ZhenCF
  * @Date: 2022-01-26-6:52
- * @Description: util
+ * @Description: com.zcf.util
  * @version: 1.0
  */
 public class ImageUtil {

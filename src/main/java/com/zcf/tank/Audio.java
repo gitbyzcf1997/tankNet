@@ -1,21 +1,18 @@
-package tank;
+package com.zcf.tank;
 
 
 
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
-import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.SourceDataLine;
 /**
  * @Auther:ZhenCF
  * @Date: 2022-01-26-4:07
- * @Description: tank
+ * @Description: com.zcf.tank
  * @version: 1.0
  */
 public class Audio{
@@ -34,7 +31,6 @@ public class Audio{
                 //开始运行
                 sourceDataLine.start();
                 //输出音频流状态
-                System.out.println(audioInputStream.markSupported());
                 audioInputStream.mark(12358946);
                 //循环输出缓冲区数据
                 while ((len=audioInputStream.read(bytes))>0){

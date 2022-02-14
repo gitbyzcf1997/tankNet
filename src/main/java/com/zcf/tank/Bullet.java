@@ -1,4 +1,4 @@
-package tank;
+package com.zcf.tank;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -6,7 +6,7 @@ import java.awt.image.BufferedImage;
 /**
  * @Auther:ZhenCF
  * @Date: 2022-01-25-0:29
- * @Description: tank
+ * @Description: com.zcf.tank
  * @version: 1.0
  */
 

@@ -1,6 +1,6 @@
-package tank;
+package com.zcf.tank;
 
-import util.PropertMgr;
+import com.zcf.util.PropertMgr;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -9,7 +9,7 @@ import java.util.Random;
 /**
  * @Auther:ZhenCF
  * @Date: 2022-01-24-23:32
- * @Description: tank
+ * @Description: com.zcf.tank
  * @version: 1.0
  */
 

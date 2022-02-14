@@ -1,4 +1,4 @@
-package util;
+package com.zcf.util;
 
 import java.io.IOException;
 import java.util.Properties;
@@ -6,7 +6,7 @@ import java.util.Properties;
 /**
  * @Auther:ZhenCF
  * @Date: 2022-01-26-9:40
- * @Description: util
+ * @Description: com.zcf.util
  * @version: 1.0
  */
 

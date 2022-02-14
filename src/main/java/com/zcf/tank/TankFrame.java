@@ -1,4 +1,4 @@
-package tank;
+package com.zcf.tank;
 
 import java.awt.*;
 import java.awt.event.KeyAdapter;
@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * @Auther:ZhenCF
  * @Date: 2022-01-24-21:56
- * @Description: tank
+ * @Description: com.zcf.tank
  * @version: 1.0
  */
 
