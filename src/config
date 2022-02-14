@@ -1,0 +1,5 @@
+#tanks count at initialization
+initTankCount=10
+tankSpeed=5
+bulletSpeed=10
+t1=10
