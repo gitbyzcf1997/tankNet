@@ -5,6 +5,7 @@ import com.zcf.util.PropertMgr;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Random;
+import java.util.UUID;
 
 /**
  * @Auther:ZhenCF
@@ -37,6 +38,7 @@ public class Tank {
     //那一方的
     private Group group=Group.BAD;
     private Rectangle rect=new Rectangle();
+    private UUID id=UUID.randomUUID();
     public Tank(int x, int y, Dir dir,TankFrame tf,Group group) {
         this.x = x;
         this.y = y;
@@ -212,5 +214,13 @@ public class Tank {
 
     public Rectangle getRect() {
         return rect;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 }
