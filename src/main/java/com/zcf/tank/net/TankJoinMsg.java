@@ -3,6 +3,7 @@ package com.zcf.tank.net;
 import com.zcf.tank.Dir;
 import com.zcf.tank.Group;
 import com.zcf.tank.Tank;
+import com.zcf.tank.TankFrame;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutput;
@@ -15,7 +16,7 @@ import java.util.UUID;
  * @Description: com.zcf.tank.net
  * @version: 1.0
  */
-public class TankJoinMsg {
+public class TankJoinMsg extends Msg{
     public int x,y;
     public Dir dir;
     public boolean moving;
@@ -42,6 +43,7 @@ public class TankJoinMsg {
 
     public TankJoinMsg() {
     }
+    @Override
     public byte[] toBytes(){
         ByteArrayOutputStream baos=null;
         DataOutputStream dos=null;
@@ -94,5 +96,12 @@ public class TankJoinMsg {
                 .append("group="+group+"|")
                 .append("]");
         return builder.toString();
+    }
+    @Override
+    public void handle() {
+        if(this.id.equals(TankFrame.INSTANCE.getMyTank().getId())||TankFrame.INSTANCE.findTankByUUID(this.id)!=null)return;
+        Tank t=new Tank(this);
+        TankFrame.INSTANCE.addTank(t);
+        Client.INSTANCE.send(new TankJoinMsg(TankFrame.INSTANCE.getMyTank()));
     }
 }

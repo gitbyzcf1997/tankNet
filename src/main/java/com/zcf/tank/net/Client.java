@@ -1,7 +1,6 @@
 package com.zcf.tank.net;
 
 
-import com.zcf.tank.Tank;
 import com.zcf.tank.TankFrame;
 import io.netty.bootstrap.Bootstrap;
 
@@ -18,7 +17,13 @@ import io.netty.channel.socket.nio.NioSocketChannel;
  * @version: 1.0
  */
 public class Client {
+    public static final Client INSTANCE = new Client();
     private Channel channel=null;
+    private Client(){}
+
+    /**
+     * Client端的连接方法 初始化Netty并连接
+     */
     public void connect(){
         EventLoopGroup group=new NioEventLoopGroup(1);
         try {
@@ -46,6 +51,18 @@ public class Client {
             group.shutdownGracefully();
         }
     }
+
+    /**
+     * 发送数据的方法
+     * @param msg TankJoinMsg.class
+     */
+    public void send(Msg msg){
+        channel.writeAndFlush(msg);
+    }
+    public void closeConnect(){
+//        this.send("_bye_");
+//        channel.close();
+    }
 }
 class ClientChannelInitializer extends ChannelInitializer<SocketChannel> {
 
@@ -57,15 +74,11 @@ class ClientChannelInitializer extends ChannelInitializer<SocketChannel> {
                 .addLast(new ClientChannelHandler());
     }
 }
-class ClientChannelHandler extends SimpleChannelInboundHandler<TankJoinMsg> {
+class ClientChannelHandler extends SimpleChannelInboundHandler<Msg> {
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, TankJoinMsg msg) throws Exception {
-       if(msg.id.equals(TankFrame.INSTANCE.getMyTank().getId())||TankFrame.INSTANCE.findTankByUUID(msg.id)!=null)return;
-        System.out.println(msg.toString());
-       Tank t=new Tank(msg);
-       TankFrame.INSTANCE.addTank(t);
-       ctx.writeAndFlush(new TankJoinMsg(TankFrame.INSTANCE.getMyTank()));
+    protected void channelRead0(ChannelHandlerContext ctx, Msg msg) throws Exception {
+        msg.handle();
     }
 
     @Override
