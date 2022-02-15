@@ -17,18 +17,27 @@ import java.util.UUID;
  */
 public class TankJoinMsgDecoder extends ByteToMessageDecoder {
     @Override
-    protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> list) throws Exception {
-        System.out.println("解析");
-        if(byteBuf.readableBytes()<33)return;//解决 TCP拆包  粘包问题
-
-        TankJoinMsg msg = new TankJoinMsg();
-
-        msg.x=byteBuf.readInt();
-        msg.y=byteBuf.readInt();
-        msg.dir= Dir.values()[byteBuf.readInt()];
-        msg.moving=byteBuf.readBoolean();
-        msg.group= Group.values()[byteBuf.readInt()];
-        msg.id=new UUID(byteBuf.readLong(), byteBuf.readLong());
-        list.add(msg);
+    protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf buf, List<Object> out) throws Exception {
+        if(buf.readableBytes()<8)return;//解决 TCP拆包  粘包问题
+        //标记从哪个位置开始读的
+        buf.markReaderIndex();
+        MsgType msgType = MsgType.values()[buf.readInt()];
+        int length=buf.readInt();
+        if(buf.readableBytes()<length){
+            //如果buf的数据小于length说明还是发包
+            //回到标记的位置  重新读
+            buf.resetReaderIndex();
+            return;
+        }
+        byte[] bytes = new byte[length];
+        buf.readBytes(bytes);
+        switch (msgType){
+            case TankJoin:
+                TankJoinMsg msg = new TankJoinMsg();
+                msg.parse(bytes);
+                out.add(msg);
+                break;
+         default:break;
+        }
     }
 }

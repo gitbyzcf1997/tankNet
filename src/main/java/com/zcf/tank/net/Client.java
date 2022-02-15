@@ -84,6 +84,5 @@ class ClientChannelHandler extends SimpleChannelInboundHandler<Msg> {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         ctx.writeAndFlush(new TankJoinMsg(TankFrame.INSTANCE.getMyTank()));
-        System.out.println("已发送");
     }
 }

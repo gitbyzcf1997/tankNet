@@ -1,5 +1,6 @@
 package com.zcf.tank;
 
+import com.zcf.tank.net.MsgType;
 import com.zcf.tank.net.TankJoinMsgDecoder;
 import com.zcf.tank.net.TankJoinMsgEncoder;
 import com.zcf.tank.net.TankJoinMsg;
@@ -27,6 +28,10 @@ public class TankJoinMsgTest {
         ch.pipeline().addLast(new TankJoinMsgEncoder()).addLast(new TankJoinMsgDecoder());
         ch.writeOutbound(msg);
         ByteBuf buf = (ByteBuf) ch.readOutbound();
+        MsgType msgType = MsgType.values()[buf.readInt()];
+        assertEquals(MsgType.TankJoin,msgType);
+        int length = buf.readInt();
+        assertEquals(33,length);
         int x = buf.readInt();
         int y = buf.readInt();
         Dir dir=Dir.values()[buf.readInt()];
@@ -47,7 +52,10 @@ public class TankJoinMsgTest {
         TankJoinMsg msg = new TankJoinMsg(5, 10, Dir.DOWN, true, Group.GOOD, id);
         ch.pipeline().addLast(new TankJoinMsgDecoder());
         ByteBuf buf=Unpooled.buffer();
-        buf.writeBytes(msg.toBytes());
+        buf.writeInt(MsgType.TankJoin.ordinal());
+        byte[] bytes = msg.toBytes();
+        buf.writeInt(bytes.length);
+        buf.writeBytes(bytes);
         ch.writeInbound(buf.duplicate());
         TankJoinMsg msgR = (TankJoinMsg) ch.readInbound();
         assertEquals(5,msgR.x);

@@ -5,9 +5,7 @@ import com.zcf.tank.Group;
 import com.zcf.tank.Tank;
 import com.zcf.tank.TankFrame;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutput;
-import java.io.DataOutputStream;
+import java.io.*;
 import java.util.UUID;
 
 /**
@@ -43,6 +41,11 @@ public class TankJoinMsg extends Msg{
 
     public TankJoinMsg() {
     }
+
+    /**
+     * 将类的属性转为二进制数据
+     * @return
+     */
     @Override
     public byte[] toBytes(){
         ByteArrayOutputStream baos=null;
@@ -83,6 +86,33 @@ public class TankJoinMsg extends Msg{
     }
 
     @Override
+    public void parse(byte[] bytes) {
+        DataInputStream dis = new DataInputStream(new ByteArrayInputStream(bytes));
+        try{
+            this.x=dis.readInt();
+            this.y=dis.readInt();
+            this.dir=Dir.values()[dis.readInt()];
+            this.moving=dis.readBoolean();
+            this.group=Group.values()[dis.readInt()];
+            this.id=new UUID(dis.readLong(),dis.readLong());
+            //this.name=dis.readUTF();
+        }catch (IOException e){
+            e.printStackTrace();
+        }finally {
+            try {
+                dis.close();
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public MsgType getMsgType() {
+        return MsgType.TankJoin;
+    }
+
+    @Override
     public String toString() {
         StringBuilder builder=new StringBuilder();
         builder.append(this.getClass().getName())
@@ -104,4 +134,5 @@ public class TankJoinMsg extends Msg{
         TankFrame.INSTANCE.addTank(t);
         Client.INSTANCE.send(new TankJoinMsg(TankFrame.INSTANCE.getMyTank()));
     }
+
 }
