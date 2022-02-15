@@ -1,5 +1,6 @@
 package com.zcf.tank;
 
+import com.zcf.tank.net.TankJoinMsg;
 import com.zcf.util.PropertMgr;
 
 import java.awt.*;
@@ -39,6 +40,14 @@ public class Tank {
     private Group group=Group.BAD;
     private Rectangle rect=new Rectangle();
     private UUID id=UUID.randomUUID();
+    public Tank(TankJoinMsg msg){
+        this.x=msg.x;
+        this.y=msg.y;
+        this.dir=msg.dir;
+        this.moving=msg.moving;
+        this.group=msg.group;
+        this.id=msg.id;
+    }
     public Tank(int x, int y, Dir dir,TankFrame tf,Group group) {
         this.x = x;
         this.y = y;
@@ -64,6 +73,7 @@ public class Tank {
         Color c = g.getColor();
         //将画笔的颜色改为黄色
         g.setColor(Color.yellow);
+        g.drawString(id.toString(),this.getX(),this.getY()-10);
         //画一个矩形
         //g.fillRect(x,y,50,50);//坐标 和宽度高度
         //根据方向获取图片

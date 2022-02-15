@@ -1,6 +1,7 @@
 package com.zcf.tank.net;
 
 
+import com.zcf.tank.Tank;
 import com.zcf.tank.TankFrame;
 import io.netty.bootstrap.Bootstrap;
 
@@ -59,11 +60,12 @@ class ClientChannelInitializer extends ChannelInitializer<SocketChannel> {
 class ClientChannelHandler extends SimpleChannelInboundHandler<TankJoinMsg> {
 
     @Override
-    protected void channelRead0(ChannelHandlerContext channelHandlerContext, TankJoinMsg msg) throws Exception {
-        System.out.println("接收消息：");
-       // if(msg.id.equals(TankFrame.INSTANCE.getMyTank().getId())||TankFrame.INSTANCE.findByUUID(msg.id)!=null)return;
+    protected void channelRead0(ChannelHandlerContext ctx, TankJoinMsg msg) throws Exception {
+       if(msg.id.equals(TankFrame.INSTANCE.getMyTank().getId())||TankFrame.INSTANCE.findTankByUUID(msg.id)!=null)return;
         System.out.println(msg.toString());
-       // Tank t=new Tank(msg);
+       Tank t=new Tank(msg);
+       TankFrame.INSTANCE.addTank(t);
+       ctx.writeAndFlush(new TankJoinMsg(TankFrame.INSTANCE.getMyTank()));
     }
 
     @Override

@@ -18,7 +18,7 @@ public class Main {
 //        for(int i=0;i<initTankCount;i++){
 //            tankFrame.tanks.add(new Tank((i*ResourceMgr.badtankU.getWidth())*2,150,Dir.DOWN,tankFrame,Group.BAD));
 //        }
-        new Thread(()->{new Audio("audio/war1.wav").loop();}).start();
+       // new Thread(()->{new Audio("audio/war1.wav").loop();}).start();
         new Thread(()-> {
             while (true) {
                 try {

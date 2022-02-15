@@ -5,9 +5,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * @Auther:ZhenCF
@@ -21,8 +20,9 @@ import java.util.UUID;
  */
 public class TankFrame extends Frame {
     public static final TankFrame INSTANCE=new TankFrame();
+    Random r=new Random();
     //主坦克
-    Tank myTank=new Tank(200,400,Dir.DOWN,this,Group.GOOD);
+    Tank myTank=new Tank(r.nextInt(GAMEWIDTH),r.nextInt(GAMEHEIGHT),Dir.DOWN,this,Group.GOOD);
     //Explode e=new Explode(100,100,this);
     //爆炸合集
     List<Explode> explodes=new ArrayList<>();
@@ -30,6 +30,7 @@ public class TankFrame extends Frame {
     List<Bullet> bulletList=new ArrayList<>();
     //敌方坦克
     List<Tank> tanks=new ArrayList<>();
+    Map<UUID,Tank> tankMap=new HashMap<>();
     //窗口宽高
     public static final int GAMEWIDTH=1500;
     public static final int GAMEHEIGHT=800;
@@ -67,6 +68,8 @@ public class TankFrame extends Frame {
         if(myTank!=null){
             myTank.paint(g);
         }
+        //java8 stream api  画敌方坦克
+        tankMap.values().stream().forEach((e)->e.paint(g));
         for(int i=0;i<bulletList.size();i++){
             bulletList.get(i).paint(g);
         }
@@ -174,5 +177,16 @@ public class TankFrame extends Frame {
 
     public Tank getMyTank() {
         return myTank;
+    }
+    public Tank findTankByUUID(UUID id){
+        Tank tank = tankMap.get(id);
+        return tank==null?null:tank;
+    }
+    public void addTank(Tank tank){
+        UUID id = tank.getId();
+        tankMap.put(id,tank);
+    }
+    public void removeTank(Tank tank){
+        tankMap.remove(tank.getId());
     }
 }
