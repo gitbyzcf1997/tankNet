@@ -1,5 +1,6 @@
 package com.zcf.tank;
 
+import com.zcf.tank.net.Client;
 import com.zcf.util.PropertMgr;
 
 /**
@@ -10,7 +11,7 @@ import com.zcf.util.PropertMgr;
  */
 public class Main {
     public static void main(String[] args) throws InterruptedException {
-        TankFrame tankFrame = new TankFrame();
+        TankFrame tankFrame = TankFrame.INSTANCE;
         PropertMgr pg = PropertMgr.getPropertMgr();
         int initTankCount= pg.getInt("initTankCount");
 //        //初始化敌方坦克
@@ -18,9 +19,17 @@ public class Main {
 //            tankFrame.tanks.add(new Tank((i*ResourceMgr.badtankU.getWidth())*2,150,Dir.DOWN,tankFrame,Group.BAD));
 //        }
         new Thread(()->{new Audio("audio/war1.wav").loop();}).start();
-        while (true){
-            Thread.sleep(50);
-            tankFrame.repaint();
-        }
+        new Thread(()-> {
+            while (true) {
+                try {
+                    Thread.sleep(25);
+                    tankFrame.repaint();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+        Client c=new Client();
+        c.connect();
     }
 }

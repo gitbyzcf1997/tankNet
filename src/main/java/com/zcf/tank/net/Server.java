@@ -1,7 +1,9 @@
 package com.zcf.tank.net;
 
+import com.zcf.tank.Tank;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
@@ -54,34 +56,21 @@ class ServerChildChannelInitializer extends ChannelInitializer<SocketChannel>{
 
     @Override
     protected void initChannel(SocketChannel channel) throws Exception {
-        channel.pipeline().addLast(new ChildChannelHandler());
+        channel.pipeline().addLast(new TankJoinMsgEncoder()).addLast(new TankJoinMsgDecoder()).addLast(new ChildChannelHandler());
     }
 }
 class ChildChannelHandler extends ChannelInboundHandlerAdapter{
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        ByteBuf buf=null;
-        try {
-            buf = (ByteBuf) msg;
-            byte[] bytes = new byte[buf.readableBytes()];
-            buf.getBytes(buf.readerIndex(), bytes);
-            String str = new String(bytes);
-            ServerFrame.INSTANCE.updateClientrMsg(ctx.channel().remoteAddress()+str);
-            if(str.equals("_bye_")){
-                Server.clients.remove(ctx.channel());
-                ctx.close();
-                ServerFrame.INSTANCE.updateServerMsg(ctx.channel().remoteAddress()+"要求退出！");
-            }else{
-                Server.clients.writeAndFlush(msg);
-            }
-        }finally {
-            //if(buf!=null)ReferenceCountUtil.release(msg);
-        }
+        TankJoinMsg tmsg = (TankJoinMsg) msg;
+        ServerFrame.INSTANCE.updateClientrMsg(ctx.channel().remoteAddress()+":"+tmsg.toString());
+        Server.clients.writeAndFlush(msg);
     }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         Server.clients.add(ctx.channel());
+        System.out.println(Server.clients.size());
     }
 
     @Override

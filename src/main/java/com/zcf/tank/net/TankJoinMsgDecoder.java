@@ -6,19 +6,19 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 
-import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 
 /**
  * @Auther:ZhenCF
- * @Date: 2022-02-14-22:03
+ * @Date: 2022-02-15-14:03
  * @Description: com.zcf.tank.net
  * @version: 1.0
  */
-public class TankJoinDecoder extends ByteToMessageDecoder {
+public class TankJoinMsgDecoder extends ByteToMessageDecoder {
     @Override
     protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> list) throws Exception {
+        System.out.println("解析");
         if(byteBuf.readableBytes()<33)return;//解决 TCP拆包  粘包问题
 
         TankJoinMsg msg = new TankJoinMsg();

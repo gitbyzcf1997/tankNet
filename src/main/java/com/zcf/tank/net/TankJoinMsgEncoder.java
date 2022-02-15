@@ -10,7 +10,7 @@ import io.netty.handler.codec.MessageToByteEncoder;
  * @Description: com.zcf.tank.net
  * @version: 1.0
  */
-public class TankJoinEncoder extends MessageToByteEncoder<TankJoinMsg> {
+public class TankJoinMsgEncoder extends MessageToByteEncoder<TankJoinMsg> {
     @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, TankJoinMsg tankJoinMsg, ByteBuf byteBuf) throws Exception {
      byteBuf.writeBytes(tankJoinMsg.toBytes());

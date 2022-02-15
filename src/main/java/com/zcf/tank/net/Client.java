@@ -1,12 +1,14 @@
 package com.zcf.tank.net;
 
+
+import com.zcf.tank.TankFrame;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.buffer.ByteBuf;
+
+
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.util.ReferenceCountUtil;
 
 /**
  * @Auther:ZhenCF
@@ -36,7 +38,7 @@ public class Client {
                         }
                     })
                     .sync();
-            f.channel().closeFuture();
+            f.channel().closeFuture().sync();
         }catch (Exception e){
             e.printStackTrace();
         }finally {
@@ -44,32 +46,29 @@ public class Client {
         }
     }
 }
-class ClientChannelInitializer extends ChannelInitializer<SocketChannel>{
+class ClientChannelInitializer extends ChannelInitializer<SocketChannel> {
 
     @Override
     protected void initChannel(SocketChannel channel) throws Exception {
-        channel.pipeline().addLast(new ClientChannelHandler());
+        channel.pipeline()
+                .addLast(new TankJoinMsgDecoder())
+                .addLast(new TankJoinMsgEncoder())
+                .addLast(new ClientChannelHandler());
     }
 }
-class ClientChannelHandler extends ChannelInboundHandlerAdapter {
+class ClientChannelHandler extends SimpleChannelInboundHandler<TankJoinMsg> {
+
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        ByteBuf buf=null;
-        try{
-            buf=(ByteBuf)msg;
-            byte[] bytes = new byte[buf.readableBytes()];
-            buf.getBytes(buf.readerIndex(),bytes);
-            String str = new String(bytes);
-            System.out.println(str);
-        }finally {
-            if(buf!=null){
-                ReferenceCountUtil.release(msg);
-            }
-        }
+    protected void channelRead0(ChannelHandlerContext channelHandlerContext, TankJoinMsg msg) throws Exception {
+        System.out.println("接收消息：");
+       // if(msg.id.equals(TankFrame.INSTANCE.getMyTank().getId())||TankFrame.INSTANCE.findByUUID(msg.id)!=null)return;
+        System.out.println(msg.toString());
+       // Tank t=new Tank(msg);
     }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        super.channelActive(ctx);
+        ctx.writeAndFlush(new TankJoinMsg(TankFrame.INSTANCE.getMyTank()));
+        System.out.println("已发送");
     }
 }

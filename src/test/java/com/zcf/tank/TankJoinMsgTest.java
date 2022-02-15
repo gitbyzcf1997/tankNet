@@ -1,7 +1,7 @@
 package com.zcf.tank;
 
-import com.zcf.tank.net.TankJoinDecoder;
-import com.zcf.tank.net.TankJoinEncoder;
+import com.zcf.tank.net.TankJoinMsgDecoder;
+import com.zcf.tank.net.TankJoinMsgEncoder;
 import com.zcf.tank.net.TankJoinMsg;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -24,7 +24,7 @@ public class TankJoinMsgTest {
         EmbeddedChannel ch=new EmbeddedChannel();
         UUID id = UUID.randomUUID();
         TankJoinMsg msg = new TankJoinMsg(5, 10, Dir.DOWN, true, Group.GOOD, id);
-        ch.pipeline().addLast(new TankJoinEncoder()).addLast(new TankJoinDecoder());
+        ch.pipeline().addLast(new TankJoinMsgEncoder()).addLast(new TankJoinMsgDecoder());
         ch.writeOutbound(msg);
         ByteBuf buf = (ByteBuf) ch.readOutbound();
         int x = buf.readInt();
@@ -45,7 +45,7 @@ public class TankJoinMsgTest {
         EmbeddedChannel ch=new EmbeddedChannel();
         UUID id = UUID.randomUUID();
         TankJoinMsg msg = new TankJoinMsg(5, 10, Dir.DOWN, true, Group.GOOD, id);
-        ch.pipeline().addLast(new TankJoinDecoder());
+        ch.pipeline().addLast(new TankJoinMsgDecoder());
         ByteBuf buf=Unpooled.buffer();
         buf.writeBytes(msg.toBytes());
         ch.writeInbound(buf.duplicate());

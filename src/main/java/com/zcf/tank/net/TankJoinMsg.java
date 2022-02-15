@@ -79,4 +79,20 @@ public class TankJoinMsg {
         }
         return bytes;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder builder=new StringBuilder();
+        builder.append(this.getClass().getName())
+                .append("[")
+                .append("uuid="+id+"|")
+                //.append("name="+name+"|")
+                .append("x="+x+"|")
+                .append("y="+y+"|")
+                .append("moving="+moving+"|")
+                .append("dir="+dir+"|")
+                .append("group="+group+"|")
+                .append("]");
+        return builder.toString();
+    }
 }

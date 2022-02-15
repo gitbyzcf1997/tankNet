@@ -7,6 +7,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @Auther:ZhenCF
@@ -19,6 +20,7 @@ import java.util.List;
  * 窗口
  */
 public class TankFrame extends Frame {
+    public static final TankFrame INSTANCE=new TankFrame();
     //主坦克
     Tank myTank=new Tank(200,400,Dir.DOWN,this,Group.GOOD);
     //Explode e=new Explode(100,100,this);
@@ -97,6 +99,10 @@ public class TankFrame extends Frame {
         g.drawImage(offScreenImage,0,0,null);
     }
 
+    public boolean findByUUID(UUID id) {
+        return false;
+    }
+
     class MyKeyListener extends KeyAdapter{
         //添加是否按下
         boolean bL=false;
@@ -164,5 +170,9 @@ public class TankFrame extends Frame {
             }
             setMainTankDir();
         }
+    }
+
+    public Tank getMyTank() {
+        return myTank;
     }
 }

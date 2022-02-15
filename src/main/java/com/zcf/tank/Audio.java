@@ -64,7 +64,6 @@ public class Audio{
             sourceDataLine.open(audioFormat, 1024*5);
             //开始运行
             sourceDataLine.start();
-            System.out.println(audioInputStream.markSupported());
             //循环读取audioInputStream的中的数据到 bt字节数组
             while ((len=audioInputStream.read(bt))>0){
                 //将音频数据输出
