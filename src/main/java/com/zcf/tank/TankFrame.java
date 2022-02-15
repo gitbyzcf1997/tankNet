@@ -1,5 +1,9 @@
 package com.zcf.tank;
 
+import com.zcf.tank.net.Client;
+import com.zcf.tank.net.TankStartMovingMsg;
+import com.zcf.tank.net.TankStopMsg;
+
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -135,18 +139,20 @@ public class TankFrame extends Frame {
                     default:break;
             }
             setMainTankDir();
-            new Thread(()->new Audio("audio/tank_move.wav").play()).start();
+            //new Thread(()->new Audio("audio/tank_move.wav").play()).start();
         }
 
         private void setMainTankDir() {
             if(!bL&&!bU&&!bR&&!bD){
                 myTank.setMoving(false);
+                Client.INSTANCE.send(new TankStopMsg(getMyTank()));
             }else {
                 myTank.setMoving(true);
                 if (bL) myTank.setDir(Dir.LEFT);
                 if (bU) myTank.setDir(Dir.UP);
                 if (bR) myTank.setDir(Dir.RIGHT);
                 if (bD) myTank.setDir(Dir.DOWN);
+                Client.INSTANCE.send(new TankStartMovingMsg(getMyTank()));
             }
         }
 
@@ -179,12 +185,11 @@ public class TankFrame extends Frame {
         return myTank;
     }
     public Tank findTankByUUID(UUID id){
-        Tank tank = tankMap.get(id);
-        return tank==null?null:tank;
+        return tankMap.get(id);
     }
     public void addTank(Tank tank){
-        UUID id = tank.getId();
-        tankMap.put(id,tank);
+
+        tankMap.put(tank.getId(),tank);
     }
     public void removeTank(Tank tank){
         tankMap.remove(tank.getId());

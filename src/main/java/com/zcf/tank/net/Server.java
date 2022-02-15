@@ -1,9 +1,6 @@
 package com.zcf.tank.net;
 
-import com.zcf.tank.Tank;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
@@ -56,14 +53,18 @@ class ServerChildChannelInitializer extends ChannelInitializer<SocketChannel>{
 
     @Override
     protected void initChannel(SocketChannel channel) throws Exception {
-        channel.pipeline().addLast(new TankJoinMsgEncoder()).addLast(new TankJoinMsgDecoder()).addLast(new ChildChannelHandler());
+        channel.pipeline().addLast(new MsgDecoder()).addLast(new MsgEncoder()).addLast(new ChildChannelHandler());
     }
 }
-class ChildChannelHandler extends ChannelInboundHandlerAdapter{
+class ChildChannelHandler extends SimpleChannelInboundHandler<Msg>{
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        TankJoinMsg tmsg = (TankJoinMsg) msg;
-        ServerFrame.INSTANCE.updateClientrMsg(ctx.channel().remoteAddress()+":"+tmsg.toString());
+        Server.clients.writeAndFlush(msg);
+        ServerFrame.INSTANCE.updateClientrMsg(msg.toString());
+    }
+
+    @Override
+    protected void channelRead0(ChannelHandlerContext channelHandlerContext, Msg msg) throws Exception {
         Server.clients.writeAndFlush(msg);
     }
 

@@ -10,7 +10,7 @@ import io.netty.handler.codec.MessageToByteEncoder;
  * @Description: com.zcf.tank.net
  * @version: 1.0
  */
-public class TankJoinMsgEncoder extends MessageToByteEncoder<Msg> {
+public class MsgEncoder extends MessageToByteEncoder<Msg> {
 
 
     @Override

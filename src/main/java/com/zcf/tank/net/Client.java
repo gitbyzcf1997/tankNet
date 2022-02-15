@@ -26,29 +26,33 @@ public class Client {
      */
     public void connect(){
         EventLoopGroup group=new NioEventLoopGroup(1);
+        Bootstrap b = new Bootstrap();
         try {
-            Bootstrap b = new Bootstrap();
             ChannelFuture f = b.group(group)
                     .channel(NioSocketChannel.class)
                     .handler(new ClientChannelInitializer())
-                    .connect("127.0.0.1", 8888)
-                    .addListener(new ChannelFutureListener() {
-                        @Override
-                        public void operationComplete(ChannelFuture channelFuture) throws Exception {
-                            if(!channelFuture.isSuccess()){
-                                System.out.println("not connected!");
-                            }else{
-                                System.out.println("connect!");
-                                channel=channelFuture.channel();
-                            }
-                        }
-                    })
-                    .sync();
+                    .connect("127.0.0.1", 8888);
+            f.addListener(new ChannelFutureListener() {
+                @Override
+                public void operationComplete(ChannelFuture channelFuture) throws Exception {
+                    if(!channelFuture.isSuccess()){
+                        System.out.println("not connected!");
+                    }else{
+                        System.out.println("connect!");
+                        channel=channelFuture.channel();
+                    }
+                }
+            });
+            f.sync();
+            //wait until close
             f.channel().closeFuture().sync();
+            System.out.println("client断开");
         }catch (Exception e){
             e.printStackTrace();
+            System.out.println("出错");
         }finally {
             group.shutdownGracefully();
+            System.out.println("关闭group");
         }
     }
 
@@ -59,18 +63,14 @@ public class Client {
     public void send(Msg msg){
         channel.writeAndFlush(msg);
     }
-    public void closeConnect(){
-//        this.send("_bye_");
-//        channel.close();
-    }
 }
 class ClientChannelInitializer extends ChannelInitializer<SocketChannel> {
 
     @Override
     protected void initChannel(SocketChannel channel) throws Exception {
         channel.pipeline()
-                .addLast(new TankJoinMsgDecoder())
-                .addLast(new TankJoinMsgEncoder())
+                .addLast(new MsgEncoder())
+                .addLast(new MsgDecoder())
                 .addLast(new ClientChannelHandler());
     }
 }
@@ -84,5 +84,10 @@ class ClientChannelHandler extends SimpleChannelInboundHandler<Msg> {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         ctx.writeAndFlush(new TankJoinMsg(TankFrame.INSTANCE.getMyTank()));
+    }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        cause.printStackTrace();
     }
 }

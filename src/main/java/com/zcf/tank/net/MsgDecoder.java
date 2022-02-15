@@ -15,7 +15,7 @@ import java.util.UUID;
  * @Description: com.zcf.tank.net
  * @version: 1.0
  */
-public class TankJoinMsgDecoder extends ByteToMessageDecoder {
+public class MsgDecoder extends ByteToMessageDecoder {
     @Override
     protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf buf, List<Object> out) throws Exception {
         if(buf.readableBytes()<8)return;//解决 TCP拆包  粘包问题
@@ -31,13 +31,24 @@ public class TankJoinMsgDecoder extends ByteToMessageDecoder {
         }
         byte[] bytes = new byte[length];
         buf.readBytes(bytes);
+        Msg msg=null;
+        //使用反射
+        Class.forName("com.zcf.tank.net."+msgType.toString()+"Msg").getDeclaredConstructor().newInstance();
         switch (msgType){
             case TankJoin:
-                TankJoinMsg msg = new TankJoinMsg();
+                 msg = new TankJoinMsg();
                 msg.parse(bytes);
                 out.add(msg);
                 break;
-         default:break;
+            case TankStartMoving:
+                 msg = new TankStartMovingMsg();
+                break;
+            case TankStop:
+                msg=new TankStopMsg();
+                break;
+            default:break;
         }
+        msg.parse(bytes);
+        out.add(msg);
     }
 }
